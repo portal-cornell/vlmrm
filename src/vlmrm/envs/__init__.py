@@ -18,3 +18,8 @@ gymnasium.register(
     get_clip_rewarded_env_name("Humanoid-v4"),
     "vlmrm.envs.mujoco.clip_rewarded_humanoid:CLIPRewardedHumanoidEnv",
 )
+
+gymnasium.register(
+    get_clip_rewarded_env_name("HumanoidStandup-v4"),
+    "vlmrm.envs.mujoco.clip_rewarded_humanoid_standup:CLIPRewardedHumanoidStandupEnv",
+)

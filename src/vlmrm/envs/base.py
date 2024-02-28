@@ -11,6 +11,7 @@ RENDER_DIM = {
     "CartPole-v1": (400, 600),
     "MountainCarContinuous-v0": (400, 600),
     "Humanoid-v4": (480, 480),
+    "HumanoidStandup-v4": (480, 480),
 }
 
 
@@ -33,4 +34,5 @@ def get_make_env(
 
 
 def is_3d_env(env_name: str) -> bool:
-    return env_name == "Humanoid-v4"
+    # So it's compatitble for both Humanoid and Humanoid stand-up
+    return "Humanoid" in env_name
