@@ -1,12 +1,34 @@
+# Commands to run
+
+## Training
+`vlmrm train "$(cat <path-to-the-config-yaml-file>.yaml)"`
+
+For example, `vlmrm train "$(cat configs/standup_config.yaml)"`
+
+## Inference
+`vlmrm generate_dataset "$(cat <path-to-the-inference-config-yaml-file>.yaml)"`
+
+For example, `vlmrm generate_dataset "$(cat configs/inference.yaml)"`
+
+
 # Navigating the repo
-1. 
+under src/vlmrm
+- cli: define `vlmrm train` and `vlmrm generate_dataset` which is used for inference 
+- contrib/sb3: is where the RL training agent is defined
 
 
-# Humanoid training detal
-For all humanoid experiments, we use SAC with the same set of hyperparameters tuned on prelimi-
-nary experiments with the kneeling task. We train for 10 million steps with an episode length of 100
-steps. Learning starts after 50000 initial steps and we do 100 SAC updates every 100 environment
-steps. We use SAC parameters τ = 0.005, γ = 0.95, and learning rate 6 · 10−4. We save a model
-checkpoint every 128000 steps. For our final evaluation, we always evaluate the checkpoint with the
-highest training reward. We parallelize rendering over 4 GPUs, and also use batch size B = 3200
-for evaluating the CLIP rewards.
+# Configuration Files
+* **config.yaml:** used to train an agent in the environment to stand up
+* **gt_config.yaml:** used to train the agent with the environment's ground truth reward (in humanoid standup environment)
+* **original_config:** used to trian the agent in the original humanoid environment (when the humanoid is spawn standing upright)
+
+
+### Camera Configuration
+For humanoid tasks, they have a custom camera angle to improve performance. They didn't provide the code/value, so these are the approximate values
+```
+camera_config:
+    lookat: [0.25, 0, 1.25]  # x, y, z
+    distance: 3.5  # Distance from the camera to the humanoid
+    azimuth: 180  # Make camera look at negative x (90 = positive y, 0 = positive x)
+    elevation: -10  # How high the camera is above ground
+```

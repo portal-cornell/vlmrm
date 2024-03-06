@@ -53,12 +53,12 @@ def primary_worker(
     make_env_kwargs = (
         dict(
             camera_config=config.reward.camera_config,
-            textured=config.reward.textured,
         )
-        if is_3d_env(config.env_name)
+        if is_3d_env(config.env_name) and config.is_clip_rewarded
         else {}
     )
     if config.is_clip_rewarded:
+        make_env_kwargs["textured"] = config.reward.textured
         make_env_kwargs["episode_length"] = config.rl.episode_length
         env_name = get_clip_rewarded_env_name(config.env_name)
     else:

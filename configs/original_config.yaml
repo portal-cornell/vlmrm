@@ -1,0 +1,46 @@
+env_name: Humanoid-v4 # RL environment name
+base_path: ./data/runs/training # Base path to save logs and checkpoints
+seed: 42 # Seed for reproducibility
+description: Humanoid training using CLIP reward
+tags: # Wandb tags
+  - training
+  - humanoid
+  - CLIP
+reward:
+  name: clip
+  pretrained_model: ViT-g-14/laion2b_s34b_b88k # CLIP model name (what's in the github)
+  # CLIP batch size per synchronous inference step.
+  # Batch size must be divisible by n_workers (GPU count)
+  # so that it can be shared among workers, and must be a divisor
+  # of n_envs * episode_length so that all batches can be of the
+  # same size (no support for variable batch size as of now.)
+  batch_size: 3200
+  alpha: 0 # Alpha value of Baseline CLIP (CO-RELATE, page 7 says that they don't use goal-baseline regularization)
+  target_prompts: # Description of the goal state
+    - a humanoid robot kneeling
+  baseline_prompts: # Description of the environment
+    - a humanoid robot
+  # Path to pre-saved model weights. When executing multiple runs,
+  # mount a volume to this path to avoid downloading the model
+  # weights multiple times.
+  cache_dir: ./.cache
+  camera_config:
+      lookat: [0.25, 0, 1.25]  # x, y, z
+      distance: 3.5  # Distance from the camera to the humanoid
+      azimuth: 180  # Make camera look at negative x (90 = positive y, 0 = positive x)
+      elevation: -10  # How high the camera is above ground
+rl:
+  policy_name: MlpPolicy
+  n_steps: 10000000 # Total number of simulation steps to be collected. [From paper: 10000000]
+  n_envs_per_worker: 8 # Number of environments per worker (GPU)
+  episode_length: 100 # Desired episode length [From paper: 100, from this other paper that actually does humanoid standup (), they did 240]
+  learning_starts: 50000 # Number of env steps to collect before training [From paper: 50000]
+  train_freq: 100 # Number of collected env steps between training iterations [From paper: 100, assume this should match episode length]
+  batch_size: 64 # SAC buffer sample size per gradient step
+  gradient_steps: 1 # Number of samples to collect from the buffer per training step
+  tau: 0.005 # SAC target network update rate [From paper: 0.005]
+  gamma: 0.95 # SAC discount factor [From paper: 0.95]
+  learning_rate: 6e-4 # SAC optimizer learning rate [From paper: 6e-4]
+logging:
+  checkpoint_freq: 128000 # Number of env steps between checkpoints [From paper: 128000]
+  video_freq: 128000 # Number of env steps between videos

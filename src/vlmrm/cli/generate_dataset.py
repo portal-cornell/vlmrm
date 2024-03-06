@@ -6,7 +6,7 @@ import csv
 import json
 import pathlib
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import imageio
 import numpy as np
@@ -27,7 +27,7 @@ class GenerateDatasetConfig(BaseModel):
     model_checkpoint: str
     model_base_path: pathlib.Path
     base_path: pathlib.Path
-    camera_config: Dict
+    camera_config: Optional[Dict[str, Any]] = None
     n_rollouts: int
     episode_length: int
     seed: int

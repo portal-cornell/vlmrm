@@ -146,8 +146,6 @@ class Config(BaseModel):
 
 class GroundTruthConfig(BaseModel):
     name: Literal["ground_truth"]
-    camera_config: Optional[Dict[str, Any]] = None
-
 
 class CLIPRewardConfig(BaseModel):
     name: Literal["clip"]
