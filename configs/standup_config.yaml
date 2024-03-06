@@ -25,7 +25,7 @@ reward:
   # weights multiple times.
   cache_dir: ./.cache
   camera_config:
-    lookat: [0.25, -1.0, 1.25]  # x, y, z
+    lookat: [0, -1.0, 1.25]  # x, y, z
     distance: 3.5  # Distance from the camera to the humanoid
     azimuth: 90  # Make camera look at negative x (90 = positive y, 0 = positive x)
     elevation: -10  # How high the camera is above ground

@@ -23,8 +23,11 @@ under src/vlmrm
 * **original_config:** used to trian the agent in the original humanoid environment (when the humanoid is spawn standing upright)
 
 
-### Camera Configuration
+# Camera Configuration
 For humanoid tasks, they have a custom camera angle to improve performance. They didn't provide the code/value, so these are the approximate values
+
+## For the paper's humanoid tasks (kneeling, splits, etc. )
+The camera is facing the front of the humanoid.
 ```
 camera_config:
     lookat: [0.25, 0, 1.25]  # x, y, z
@@ -32,3 +35,15 @@ camera_config:
     azimuth: 180  # Make camera look at negative x (90 = positive y, 0 = positive x)
     elevation: -10  # How high the camera is above ground
 ```
+![Humanoid Viewpoint](./assets/humanoid_view.gif)
+
+## For the humanoid stand up from lying down
+I think CLIP might have a easier time seeing the side profile of the humanoid (so azimuth is 90, also moved the humanoid more towards the center)
+```
+camera_config:
+    lookat: [0, -1.0, 1.25]  # x, y, z
+    distance: 3.5  # Distance from the camera to the humanoid
+    azimuth: 90  # Make camera look at negative x (90 = positive y, 0 = positive x)
+    elevation: -10  # How high the camera is above ground
+```
+![Humanoid Standup Viewpoint](./assets/humanoid_standup_view.gif)
