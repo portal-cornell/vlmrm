@@ -4,22 +4,16 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 from gymnasium import utils
 from gymnasium.envs.mujoco import MujocoEnv
-from gymnasium.envs.mujoco.humanoid_v4 import HumanoidEnv as GymHumanoidEnv
+from gymnasium.envs.mujoco.humanoidstandup_v4 import HumanoidStandupEnv as GymHumanoidStandupEnv
 from gymnasium.spaces import Box
 from numpy.typing import NDArray
 
 
-class CLIPRewardedHumanoidStandupEnv(GymHumanoidEnv):
+class CLIPRewardedHumanoidStandupEnv(GymHumanoidStandupEnv):
     def __init__(
         self,
         episode_length: int,
         render_mode: str = "rgb_array",
-        forward_reward_weight: float = 1.25,
-        ctrl_cost_weight: float = 0.1,
-        healthy_reward: float = 5.0,
-        healthy_z_range: Tuple[float] = (1.0, 2.0),
-        reset_noise_scale: float = 1e-2,
-        exclude_current_positions_from_observation: bool = True,
         camera_config: Optional[Dict[str, Any]] = None,
         textured: bool = True,
         **kwargs,
@@ -27,37 +21,13 @@ class CLIPRewardedHumanoidStandupEnv(GymHumanoidEnv):
         terminate_when_unhealthy = False
         utils.EzPickle.__init__(
             self,
-            forward_reward_weight,
-            ctrl_cost_weight,
-            healthy_reward,
-            terminate_when_unhealthy,
-            healthy_z_range,
-            reset_noise_scale,
-            exclude_current_positions_from_observation,
             render_mode=render_mode,
             **kwargs,
         )
 
-        self._forward_reward_weight = forward_reward_weight
-        self._ctrl_cost_weight = ctrl_cost_weight
-        self._healthy_reward = healthy_reward
-        self._terminate_when_unhealthy = terminate_when_unhealthy
-        self._healthy_z_range = healthy_z_range
-
-        self._reset_noise_scale = reset_noise_scale
-
-        self._exclude_current_positions_from_observation = (
-            exclude_current_positions_from_observation
+        observation_space = Box(
+            low=-np.inf, high=np.inf, shape=(376,), dtype=np.float64
         )
-
-        if exclude_current_positions_from_observation:
-            observation_space = Box(
-                low=-np.inf, high=np.inf, shape=(376,), dtype=np.float64
-            )
-        else:
-            observation_space = Box(
-                low=-np.inf, high=np.inf, shape=(378,), dtype=np.float64
-            )
         env_file_name = None
         if textured:
             env_file_name = "humanoidstandup_textured.xml"

@@ -23,3 +23,15 @@ gymnasium.register(
     get_clip_rewarded_env_name("HumanoidStandup-v4"),
     "vlmrm.envs.mujoco.clip_rewarded_humanoid_standup:CLIPRewardedHumanoidStandupEnv",
 )
+
+
+gymnasium.register(
+    "HumanoidRemainStanding",
+    "vlmrm.envs.mujoco.humanoid_remain_standing:HumanoidRemainStandingEnv",
+)
+
+
+gymnasium.register(
+    get_clip_rewarded_env_name("HumanoidRemainStanding"),
+    "vlmrm.envs.mujoco.clip_rewarded_humanoid_remain_standing:CLIPRewardedHumanoidRemainStandingEnv",
+)

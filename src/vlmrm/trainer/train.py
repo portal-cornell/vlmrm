@@ -13,11 +13,13 @@ import yaml
 from loguru import logger
 from stable_baselines3 import SAC
 from stable_baselines3.common.callbacks import CallbackList
+from stable_baselines3.common.logger import configure
 
 import vlmrm.contrib.sb3.signal_handler as signal_handler
 import wandb
 from vlmrm import multiprocessing, util
 from vlmrm.contrib.sb3.base import get_clip_rewarded_rl_algorithm_class
+from vlmrm.contrib.sb3.gt_sac import GTSAC
 from vlmrm.contrib.sb3.callbacks import VideoRecorderCallback, WandbCallback
 from vlmrm.contrib.sb3.make_vec_env import make_vec_env
 from vlmrm.contrib.sb3.signal_handler import end_signal_handler
@@ -88,23 +90,46 @@ def primary_worker(
     )
     assert run is not None
 
-    wandb.define_metric("global_step")
-    global_step_metrics = ["rollout/*", "train/*", "time/*", "trajectory/*"]
-    for metric in global_step_metrics:
-        wandb.define_metric(metric, step_metric="global_step")
+    if config.is_clip_rewarded:
+        wandb.define_metric("global_step")
+        global_step_metrics = ["rollout/*", "train/*", "time/*", "trajectory/*"]
+        for metric in global_step_metrics:
+            wandb.define_metric(metric, step_metric="global_step")
 
     logger.info("Setting up RL algorithm")
     if config.is_clip_rewarded:
         rl_algorithm_class = get_clip_rewarded_rl_algorithm_class(config.env_name)
         algo = rl_algorithm_class(env=vec_env, config=config)
     else:
-        algo = SAC(
-            config.rl.policy_name,
-            vec_env,
-            tensorboard_log=str(config.tb_dir),
-            seed=config.seed,
-            device="cuda:0",
-        )
+        algo = GTSAC(env=vec_env, config=config)
+        # stats_window_size = (
+        #     (config.rl.learning_starts + config.rl.train_freq * vec_env.num_envs)
+        #     // config.rl.episode_length
+        #     // vec_env.num_envs
+        # ) * vec_env.num_envs
+
+        # algo = SAC(
+        #     config.rl.policy_name,
+        #     vec_env,
+        #     stats_window_size=stats_window_size,
+        #     learning_starts=config.rl.learning_starts,
+        #     train_freq=config.rl.train_freq,
+        #     gradient_steps=config.rl.gradient_steps,
+        #     batch_size=config.rl.batch_size,
+        #     verbose=True,
+        #     tensorboard_log=str(config.tb_dir),
+        #     seed=config.seed,
+        #     device="cuda:0",
+        #     learning_rate=config.rl.learning_rate,
+        #     tau=config.rl.tau,
+        #     gamma=config.rl.gamma,
+        #     buffer_size=config.rl.buffer_size,
+        # )
+
+        # tmp_path = str(config.tb_dir)
+        # # set up logger
+        # new_logger = configure(tmp_path, ["stdout", "tensorboard"])
+        # algo.set_logger(new_logger)
 
     signal_handler.model = algo
     signal_handler.checkpoint_dir = str(config.checkpoints_path)

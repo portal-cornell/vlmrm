@@ -12,6 +12,7 @@ RENDER_DIM = {
     "MountainCarContinuous-v0": (400, 600),
     "Humanoid-v4": (480, 480),
     "HumanoidStandup-v4": (480, 480),
+    "HumanoidRemainStanding": (480, 480),
 }
 
 

@@ -14,7 +14,7 @@ from vlmrm.envs.base import RENDER_DIM
 
 
 class Config(BaseModel):
-    env_name: Literal["CartPole-v1", "Humanoid-v4", "HumanoidStandup-v4", "MountainCarContinuous-v0"]
+    env_name: Literal["CartPole-v1", "Humanoid-v4", "HumanoidStandup-v4", "MountainCarContinuous-v0", "HumanoidRemainStanding"]
     base_path: pathlib.Path
     seed: int
     description: str
@@ -158,6 +158,7 @@ class CLIPRewardConfig(BaseModel):
     camera_config: Optional[Dict[str, Any]] = None
     textured: bool = True
 
+    # TODO (multi-prompt reward): verify that we can pass in a list of rewards
     @computed_field
     @property
     def pretrained_config_dict(self) -> Dict[str, Any]:

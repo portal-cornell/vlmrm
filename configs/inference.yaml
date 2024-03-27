@@ -1,12 +1,24 @@
-env_name: Humanoid-v4 # RL environment name
+env_name: HumanoidStandup-v4 # HumanoidRemainStanding # RL environment name
+is_clip_rewarded: False
+plot_env_reward: True
+video_base_name: standing_up
 model_checkpoint: final_model # Model checkpoint to load
-model_base_path: ./data/runs/training/Humanoid_CLIP_raise-arm_500ksteps_2024-02-27_23-49-12_e7fca609/checkpoints # Relative path to the checkpoint folder
-base_path: ./data/runs/training # Base path to save logs and checkpoints
+model_base_path: ./data/runs/training/HumanoidStandup_GT_steps=10e6_2024-03-13_10-26-55_4c100dc8/checkpoints # Relative path to the checkpoint folder
+base_path: ./data/runs/inference # Base path to save logs and checkpoints
 n_rollouts: 1 # Number of rollouts to generate
-episode_length: 100 # 
 seed: 42 # Seed for reproducibility
+#### views for standing up from lying down
+episode_length: 240
 camera_config:
-    lookat: [0.25, 0, 1.25]  # x, y, z
+    lookat: [0, -1.0, 1.25]  # x, y, z
     distance: 3.5  # Distance from the camera to the humanoid
-    azimuth: 180  # Make camera look at negative x (90 = positive y, 0 = positive x)
+    azimuth: 90  # Make camera look at negative x (90 = positive y, 0 = positive x)
     elevation: -10  # How high the camera is above ground
+
+#### views for the default tasks
+# episode_length: 100
+# camera_config:
+#     lookat: [0.25, 0, 1.25]  # x, y, z
+#     distance: 3.5  # Distance from the camera to the humanoid
+#     azimuth: 180  # Make camera look at negative x (90 = positive y, 0 = positive x)
+#     elevation: -10  # How high the camera is above ground
